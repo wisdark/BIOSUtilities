@@ -4,10 +4,10 @@
 """
 AMI PFAT Extract
 AMI BIOS Guard Extractor
-Copyright (C) 2018-2020 Plato Mavropoulos
+Copyright (C) 2018-2021 Plato Mavropoulos
 """
 
-print('AMI BIOS Guard Extractor v3.0')
+print('AMI BIOS Guard Extractor v3.2')
 
 import sys
 
@@ -15,13 +15,12 @@ import sys
 sys_ver = sys.version_info
 if sys_ver < (3,7) :
 	sys.stdout.write('\n\nError: Python >= 3.7 required, not %d.%d!\n' % (sys_ver[0], sys_ver[1]))
-	(raw_input if sys_ver[0] <= 2 else input)('\nPress enter to exit')
+	(raw_input if sys_ver[0] <= 2 else input)('\nPress enter to exit') # pylint: disable=E0602
 	sys.exit(1)
 
 import os
 import re
 import ctypes
-import struct
 import shutil
 import traceback
 
@@ -65,11 +64,11 @@ class PFAT_Header(ctypes.LittleEndianStructure) :
 	]
 	
 	def pfat_print(self) :
-		print('\nPFAT Main Header:\n')
-		print('    Size        : 0x%X' % self.Size)
-		print('    Checksum    : 0x%0.4X' % self.Checksum)
-		print('    Tag         : %s' % self.Tag.decode('utf-8'))
-		print('    Flags       : 0x%0.2X' % self.Flags)
+		print('\n    PFAT Main Header:\n')
+		print('        Size        : 0x%X' % self.Size)
+		print('        Checksum    : 0x%0.4X' % self.Checksum)
+		print('        Tag         : %s' % self.Tag.decode('utf-8'))
+		print('        Flags       : 0x%0.2X' % self.Flags)
 
 class PFAT_Block_Header(ctypes.LittleEndianStructure) :
 	_pack_ = 1
@@ -109,20 +108,20 @@ class PFAT_Block_Header(ctypes.LittleEndianStructure) :
 			PlatformID = '%0.*X' % (0x10 * 2, int.from_bytes(self.PlatformID, 'big'))
 			PlatformID = '{%s-%s-%s-%s-%s}' % (PlatformID[:8], PlatformID[8:12], PlatformID[12:16], PlatformID[16:20], PlatformID[20:])
 		
-		print('\n        PFAT Block %s Header:\n' % self.count)
-		print('            PFAT Version              : %d.%d' % (self.PFATVerMajor, self.PFATVerMinor))
-		print('            Platform ID               : %s' % PlatformID)
-		print('            Signed Flash Address Map  : %s' % no_yes[f1])
-		print('            Protected EC OpCodes      : %s' % no_yes[f2])
-		print('            Graphics Security Disable : %s' % no_yes[f3])
-		print('            Fault Tolerant Update     : %s' % no_yes[f4])
-		print('            Attributes Reserved       : 0x%X' % f5)
-		print('            Script Version            : %d.%d' % (self.ScriptVerMajor, self.ScriptVerMinor))
-		print('            Script Size               : 0x%X' % self.ScriptSize)
-		print('            Data Size                 : 0x%X' % self.DataSize)
-		print('            BIOS SVN                  : 0x%X' % self.BIOSSVN)
-		print('            EC SVN                    : 0x%X' % self.ECSVN)
-		print('            Vendor Info               : 0x%X' % self.VendorInfo)
+		print('\n            PFAT Block %s Header:\n' % self.count)
+		print('                PFAT Version              : %d.%d' % (self.PFATVerMajor, self.PFATVerMinor))
+		print('                Platform ID               : %s' % PlatformID)
+		print('                Signed Flash Address Map  : %s' % no_yes[f1])
+		print('                Protected EC OpCodes      : %s' % no_yes[f2])
+		print('                Graphics Security Disable : %s' % no_yes[f3])
+		print('                Fault Tolerant Update     : %s' % no_yes[f4])
+		print('                Attributes Reserved       : 0x%X' % f5)
+		print('                Script Version            : %d.%d' % (self.ScriptVerMajor, self.ScriptVerMinor))
+		print('                Script Size               : 0x%X' % self.ScriptSize)
+		print('                Data Size                 : 0x%X' % self.DataSize)
+		print('                BIOS SVN                  : 0x%X' % self.BIOSSVN)
+		print('                EC SVN                    : 0x%X' % self.ECSVN)
+		print('                Vendor Info               : 0x%X' % self.VendorInfo)
 		
 class PFAT_Block_Header_Attributes(ctypes.LittleEndianStructure):
 	_fields_ = [
@@ -158,12 +157,12 @@ class PFAT_Block_RSA(ctypes.LittleEndianStructure) :
 		PublicKey = '%0.*X' % (0x100 * 2, int.from_bytes(self.PublicKey, 'little'))
 		Signature = '%0.*X' % (0x100 * 2, int.from_bytes(self.Signature, 'little'))
 		
-		print('\n        PFAT Block %s Signature:\n' % self.count)
-		print('            Unknown 0                 : 0x%X' % self.Unknown0)
-		print('            Unknown 1                 : 0x%X' % self.Unknown1)
-		print('            Public Key                : %s [...]' % PublicKey[:8])
-		print('            Exponent                  : 0x%X' % self.Exponent)
-		print('            Signature                 : %s [...]' % Signature[:8])
+		print('\n            PFAT Block %s Signature:\n' % self.count)
+		print('                Unknown 0                 : 0x%X' % self.Unknown0)
+		print('                Unknown 1                 : 0x%X' % self.Unknown1)
+		print('                Public Key                : %s [...]' % PublicKey[:8])
+		print('                Exponent                  : 0x%X' % self.Exponent)
+		print('                Signature                 : %s [...]' % Signature[:8])
 
 # https://github.com/skochinsky/me-tools/blob/master/me_unpack.py by Igor Skochinsky
 def get_struct(buffer, start_offset, class_name, param_list = None) :
@@ -175,7 +174,7 @@ def get_struct(buffer, start_offset, class_name, param_list = None) :
 	fit_len = min(len(struct_data), struct_len)
 	
 	if (start_offset >= len(buffer)) or (fit_len < struct_len) :
-		input('\nError: Offset 0x%X out of bounds at %s, possibly incomplete image!' % (start_offset, class_name.__name__))
+		input('\n    Error: Offset 0x%X out of bounds at %s, possibly incomplete image!' % (start_offset, class_name.__name__))
 		sys.exit(1)
 	
 	ctypes.memmove(ctypes.addressof(structure), struct_data, fit_len)
@@ -190,22 +189,21 @@ else :
 	ami_pfat = []
 	in_path = input('\nEnter the full folder path: ')
 	print('\nWorking...')
-	for root, dirs, files in os.walk(in_path):
+	for root, _, files in os.walk(in_path):
 		for name in files :
 			ami_pfat.append(os.path.join(root, name))
 
 pfat_index = 1
+input_name = ''
+input_extension = ''
 output_path = ''
 block_hdr_size = ctypes.sizeof(PFAT_Block_Header)
 block_rsa_size = ctypes.sizeof(PFAT_Block_RSA)
 pfat_pat = re.compile(b'_AMIPFAT.AMI_BIOS_GUARD_FLASH_CONFIGURATIONS', re.DOTALL)
 
 for input_file in ami_pfat :
-	input_name,input_extension = os.path.splitext(os.path.basename(input_file))
-	input_dir = os.path.dirname(os.path.abspath(input_file))
-	
 	file_data = b''
-	final_image = b''
+	final_data = b''
 	block_name = ''
 	block_count = 0
 	file_index = 0
@@ -214,6 +212,22 @@ for input_file in ami_pfat :
 	with open(input_file, 'rb') as in_file : buffer = in_file.read()
 	
 	pfat_match = pfat_pat.search(buffer)
+	
+	if pfat_index == 1 :
+		input_name,input_extension = os.path.splitext(os.path.basename(input_file))
+		input_dir = os.path.dirname(os.path.abspath(input_file))
+		
+		print('\n*** %s%s' % (input_name, input_extension))
+		
+		if not pfat_match :
+			print('\n        Error: This is not an AMI BIOS Guard (PFAT) image!')
+			continue
+		
+		output_path = os.path.join(input_dir, '%s%s' % (input_name, input_extension) + '_extracted') # Set extraction directory
+		
+		if os.path.isdir(output_path) : shutil.rmtree(output_path) # Delete any existing extraction directory
+		
+		os.mkdir(output_path) # Create extraction directory
 	
 	if not pfat_match : continue
 	
@@ -225,16 +239,9 @@ for input_file in ami_pfat :
 	hdr_data = buffer[0x11:hdr_size].decode('utf-8').splitlines()
 	
 	pfat_hdr.pfat_print()
-	print('    Title       : %s' % hdr_data[0])
-	
-	if pfat_index == 1 :
-		output_path = os.path.join(input_dir, '%s%s' % (input_name, input_extension) + '_extracted') # Set extraction directory
+	print('        Title       : %s' % hdr_data[0])
 		
-		if os.path.isdir(output_path) : shutil.rmtree(output_path) # Delete any existing extraction directory
-		
-		os.mkdir(output_path) # Create extraction directory
-	
-	file_path = os.path.join(output_path, '%d' % pfat_index)
+	file_path = os.path.join(output_path, '%s%s -- %d' % (input_name, input_extension, pfat_index))
 	
 	for entry in hdr_data[1:] :
 		entry_data = entry.split(' ')
@@ -252,7 +259,7 @@ for input_file in ami_pfat :
 	for i in range(block_count) :
 		is_file_start = blocks[i][0] != block_name
 		
-		if is_file_start : print('\n    %s (Parameter: %s, Flags: 0x%X)' % (blocks[i][0], blocks[i][1], blocks[i][2]))
+		if is_file_start : print('\n        %s (Parameter: %s, Flags: 0x%X)' % (blocks[i][0], blocks[i][1], blocks[i][2]))
 			
 		block_hdr = get_struct(buffer, block_start, PFAT_Block_Header, ['%d/%d' % (blocks[i][3], blocks[i][4])])
 		block_hdr.pfat_print()
@@ -266,25 +273,25 @@ for input_file in ami_pfat :
 		block_rsa = get_struct(buffer, block_data_end, PFAT_Block_RSA, ['%d/%d' % (blocks[i][3], blocks[i][4])])
 		block_rsa.pfat_print()
 		
-		print('\n        PFAT Block %d/%d Script:\n' % (blocks[i][3], blocks[i][4]))
+		print('\n            PFAT Block %d/%d Script:\n' % (blocks[i][3], blocks[i][4]))
 		is_opcode_div = len(block_script_data) % 8 == 0
 		is_begin_end = block_script_data[:8] + block_script_data[-8:] == b'\x01' + b'\x00' * 7 + b'\xFF' + b'\x00' * 7
 		if is_opcode_div and is_begin_end and is_bgst :
 			block_script_decomp = BigScript(code_bytes=block_script_data)
 			block_script_lines = block_script_decomp.to_string().replace('\t','    ').split('\n')
 			for line in block_script_lines :
-				spacing = ' ' * 12 if line.endswith(('begin','end',':')) else ' ' * 20
+				spacing = ' ' * 16 if line.endswith(('begin','end',':')) else ' ' * 24
 				operands = [op for op in line.split(' ') if op != '']
 				print(spacing + ('{:<12s}' + '{:<11s}' * (len(operands) - 1)).format(*operands))
 		elif not is_opcode_div :
-			print('            Error: Script not divisible by OpCode length!')
+			print('                Error: Script not divisible by OpCode length!')
 		elif not is_begin_end :
-			print('            Error: Script lacks Begin and/or End OpCodes!')
+			print('                Error: Script lacks Begin and/or End OpCodes!')
 		elif not is_bgst :
-			print('            Error: BIOS Guard Script Tool dependency missing!')
+			print('                Error: BIOS Guard Script Tool dependency missing!')
 		
 		file_data += block_data
-		final_image += block_data
+		final_data += block_data
 		
 		if i and is_file_start and file_data :
 			file_index += 1
@@ -296,9 +303,10 @@ for input_file in ami_pfat :
 	
 	with open('%s_%0.2d -- %s' % (file_path, file_index + 1, block_name), 'wb') as o : o.write(file_data) # Last File
 	
-	with open('%s_00 -- AMI_PFAT_%d_DATA_ALL.bin' % (file_path, pfat_index), 'wb') as final : final.write(final_image)
-	
 	eof_data = buffer[block_start:] # Store any data after the end of PFAT
+	
+	with open('%s_00 -- AMI_PFAT_%d_DATA_ALL.bin' % (file_path, pfat_index), 'wb') as final : final.write(final_data + eof_data)
+	
 	if eof_data[:-0x100] != b'\xFF' * (len(eof_data) - 0x100) :
 		eof_path = '%s_%0.2d -- AMI_PFAT_%d_DATA_END.bin' % (file_path, file_index + 2, pfat_index)
 		with open(eof_path, 'wb') as final : final.write(eof_data)
@@ -310,5 +318,4 @@ for input_file in ami_pfat :
 		else :
 			pfat_index = 1
 		
-else :
-	input('\nDone!')
+input('\nDone!')

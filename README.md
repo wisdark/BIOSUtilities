@@ -1,17 +1,17 @@
 # BIOSUtilities
-Various BIOS Utilities for Modding/Research
+**Various BIOS Utilities for Modding/Research**
 
 [BIOS Utilities News Feed](https://twitter.com/platomaniac)
 
-[![BIOS Utilities Donation](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=DJDZD3PRGCSCL)
+<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=DJDZD3PRGCSCL"><img border="0" title="BIOS Utilities Donation via Paypal or Debit/Credit Card" alt="BIOS Utilities Donation via Paypal or Debit/Credit Card" src="https://user-images.githubusercontent.com/11527726/109392268-e0f68280-7923-11eb-83d8-0a63f0d20783.png"></a>
 
 ## **Dell PFS BIOS Extractor**
 
-![](https://i.imgur.com/kN9aKCm.png)
+![](https://i.imgur.com/Oy1IkcW.png)
 
 #### **Description**
 
-Parses Dell PFS BIOS images and extracts their SPI/BIOS/UEFI firmware components. It supports all Dell PFS revisions and formats, including those which are originally compressed or split in chunks. The output comprises only final firmware components which are directly usable by end users. An optional Advanced user mode is available as well, which additionally extracts firmware Signatures and more Metadata.
+Parses Dell PFS BIOS images and extracts their SPI/BIOS/UEFI firmware components. It supports all Dell PFS revisions and formats, including those which are originally LZMA compressed in ThinOS packages, ZLIB compressed or split in chunks. The output comprises only final firmware components which are directly usable by end users. An optional Advanced user mode is available as well, which additionally extracts firmware Signatures and more Metadata.
 
 #### **Usage**
 
@@ -66,7 +66,7 @@ Some Anti-Virus software may claim that the built/frozen/compiled executable con
 
 Parses AMI BIOS Guard (a.k.a. PFAT, Platform Firmware Armoring Technology) images, extracts their SPI/BIOS/UEFI firmware components and decompiles the Intel BIOS Guard Scripts. It supports all AMI PFAT revisions and formats, including those with nested AMI PFAT structures. The output comprises only final firmware components which are directly usable by end users.
 
-Note that the AMI PFAT structure does not have an explicit component order. AMI's BIOS Guard Firmware Update Tool (AFUBGT) updates components based on the user/OEM provided Parameters and Options. That means that merging all the components together does not usually yield a proper SPI/BIOS/UEFI image. The utility does generate such a merged file with the name "X_00 -- AMI_PFAT_X_DATA_ALL.bin" but it is up to the end user to determine its usefulness. Moreover, any custom OEM data after the AMI PFAT structure are stored in a file with the name "X_YY -- AMI_PFAT_X_DATA_END.bin" and it is once again up to the end user to determine its usefulness. In cases where the trailing custom OEM data include a nested AMI PFAT structure, the utility will process and extract it automatically as well.
+Note that the AMI PFAT structure does not have an explicit component order. AMI's BIOS Guard Firmware Update Tool (AFUBGT) updates components based on the user/OEM provided Parameters and Options. That means that merging all the components together does not usually yield a proper SPI/BIOS/UEFI image. The utility does generate such a merged file with the name "X_00 -- AMI_PFAT_X_DATA_ALL.bin" but it is up to the end user to determine its usefulness. Moreover, any custom OEM data after the AMI PFAT structure are additionally stored in a file with the name "X_YY -- AMI_PFAT_X_DATA_END.bin" and it is once again up to the end user to determine its usefulness. In cases where the trailing custom OEM data include a nested AMI PFAT structure, the utility will process and extract it automatically as well.
 
 #### **Usage**
 
@@ -509,3 +509,6 @@ At dist folder you should find the final utility executable
 #### **Anti-Virus False Positives**
 
 Some Anti-Virus software may claim that the built/frozen/compiled executable contains viruses. Any such detections are false positives, usually of PyInstaller. You can switch to a better Anti-Virus software, report the false positive to their support, add the executable to the exclusions, build/freeze/compile yourself or use the Python script directly.
+
+###### _Donate Button Card Image: [Credit and Loan Pack](https://flaticon.com/free-icon/credit-card_3898076) by **Freepik** under Flaticon license_
+###### _Donate Button Paypal Image: [Credit Cards Pack](https://flaticon.com/free-icon/paypal_349278) by **Freepik** under Flaticon license_
