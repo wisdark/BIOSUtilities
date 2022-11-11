@@ -1,780 +1,552 @@
-# BIOSUtilities
+# BIOSUtilities [Refactor - WIP]
 **Various BIOS Utilities for Modding/Research**
 
 [BIOS Utilities News Feed](https://twitter.com/platomaniac)
 
-<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=DJDZD3PRGCSCL"><img border="0" title="BIOS Utilities Donation via Paypal or Debit/Credit Card" alt="BIOS Utilities Donation via Paypal or Debit/Credit Card" src="https://user-images.githubusercontent.com/11527726/109392268-e0f68280-7923-11eb-83d8-0a63f0d20783.png"></a>
-
-* [**Dell PFS Update Extractor**](#dell-pfs-update-extractor)
-* [**AMI UCP BIOS Extractor**](#ami-ucp-bios-extractor)
 * [**AMI BIOS Guard Extractor**](#ami-bios-guard-extractor)
-* [**Phoenix SCT BIOS Extractor**](#phoenix-sct-bios-extractor)
-* [**Portwell EFI BIOS Extractor**](#portwell-efi-bios-extractor)
-* [**Panasonic BIOS Update Extractor**](#panasonic-bios-update-extractor)
-* [**VAIO Packaging Manager Extractor**](#vaio-packaging-manager-extractor)
-* [**Fujitsu UPC BIOS Extractor**](#fujitsu-upc-bios-extractor)
-* [**Fujitsu SFX BIOS Extractor**](#fujitsu-sfx-bios-extractor)
-* [**Award BIOS Module Extractor**](#award-bios-module-extractor)
-* [**Apple EFI Sucatalog Link Grabber**](#apple-efi-sucatalog-link-grabber)
-* [**Apple EFI File Renamer**](#apple-efi-file-renamer)
+* [**AMI UCP Update Extractor**](#ami-ucp-update-extractor)
 * [**Apple EFI IM4P Splitter**](#apple-efi-im4p-splitter)
+* [**Apple EFI Image Identifier**](#apple-efi-image-identifier)
 * [**Apple EFI Package Extractor**](#apple-efi-package-extractor)
-
-## **Dell PFS Update Extractor**
-
-![](https://i.imgur.com/5WaGPPl.png)
-
-#### **Description**
-
-Parses Dell PFS Update images and extracts their Firmware (e.g. SPI, BIOS/UEFI, EC, ME etc) and Utilities (e.g. Flasher etc) component sections. It supports all Dell PFS revisions and formats, including those which are originally LZMA compressed in ThinOS packages, ZLIB compressed or Intel BIOS Guard (PFAT) protected. The output comprises only final firmware components which are directly usable by end users. An optional advanced user mode is available as well, which additionally extracts firmware Signatures and more Metadata.
-
-#### **Usage**
-
-You can either Drag & Drop or manually enter the full path of a folder containing Dell PFS BIOS images. Optional arguments:
-  
-* -h or --help : show help message and exit
-* -a or --advanced : extract in advanced user mode
-* -v or --verbose : show PFS structure information
-* -e or --auto-exit : skip press enter to exit prompts
-* -o or --output-dir : extract in given output directory
-* -i or --input-dir : extract from given input directory
-
-#### **Download**
-
-An already built/frozen/compiled binary is provided by me for Windows only. Thus, **you don't need to manually build/freeze/compile it under Windows**. Instead, download the latest version from the [Releases](https://github.com/platomav/BIOSUtilities/releases) tab. To extract the already built/frozen/compiled archive, you need to use programs which support RAR5 compression. Note that you need to manually apply any prerequisites.
-
-#### **Compatibility**
-
-Should work at all Windows, Linux or macOS operating systems which have Python 3.7 support. Windows users who plan to use the already built/frozen/compiled binary must make sure that they have the latest Windows Updates installed which include all required "Universal C Runtime (CRT)" libraries.
-
-#### **Prerequisites**
-
-To decompile the Intel BIOS Guard Scripts via the Python script, you need to additionally have the following 3rd party Python utility at the same directory:
-
-* [BIOS Guard Script Tool](https://github.com/allowitsme/big-tool/tree/sdk-compat) (i.e. big_script_tool.py)
-
-#### **Build/Freeze/Compile with PyInstaller**
-
-PyInstaller can build/freeze/compile the utility at all three supported platforms, it is simple to run and gets updated often.
-
-1. Make sure Python 3.7.0 or newer is installed:
-
-> python --version
-
-2. Use pip to install PyInstaller:
-
-> pip3 install pyinstaller
-
-3. Copy BIOS Guard Script Tool dependency to build directory:
-
-> Dell_PFS_Extract.py, big_script_tool.py
-
-4. Build/Freeze/Compile:
-
-> pyinstaller --noupx --onefile Dell_PFS_Extract.py
-
-At dist folder you should find the final utility executable
-
-#### **Anti-Virus False Positives**
-
-Some Anti-Virus software may claim that the built/frozen/compiled executable contains viruses. Any such detections are false positives, usually of PyInstaller. You can switch to a better Anti-Virus software, report the false positive to their support, add the executable to the exclusions, build/freeze/compile yourself or use the Python script directly.
-
-#### **Pictures**
-
-![](https://i.imgur.com/LCsUknA.png)
-
-![](https://i.imgur.com/TcARQpk.png)
-
-![](https://i.imgur.com/UWCx75g.png)
-
-![](https://i.imgur.com/1rokMss.png)
-
-## **AMI UCP BIOS Extractor**
-
-![](https://i.imgur.com/6YWoMGk.png)
-
-#### **Description**
-
-Parses AMI UCP (Utility Configuration Program) BIOS images, extracts their SPI/BIOS/UEFI firmware components and shows all relevant info. It supports all AMI UCP revisions and formats, including those with nested AMI UCP or Insyde SFX structures. The output comprises only final firmware components and utilities which are directly usable by end users.
-
-Note that AMI UCP BIOS images are protected by various checksums but, due to algorithmic performance reasons, AMI UCP BIOS Extractor does not check them by default. An optional parameter is provided though, for verifying all checksums during extraction.
-
-#### **Usage**
-
-You can either Drag & Drop or manually enter the full path of a folder containing AMI UCP BIOS images. Optional arguments:
-  
-* -h or --help : show help message and exit
-* -p or --path : parse files within given folder
-* -c or --checksum : verify AMI UCP Checksums (slow)
-
-#### **Download**
-
-An already built/frozen/compiled binary is provided by me for Windows only. Thus, **you don't need to manually build/freeze/compile it under Windows**. Instead, download the latest version from the [Releases](https://github.com/platomav/BIOSUtilities/releases) tab. To extract the already built/frozen/compiled archive, you need to use programs which support RAR5 compression. Note that you need to manually apply any prerequisites.
-
-#### **Compatibility**
-
-Should work at all Windows, Linux or macOS operating systems which have Python 3.7 support. Windows users who plan to use the already built/frozen/compiled binary must make sure that they have the latest Windows Updates installed which include all required "Universal C Runtime (CRT)" libraries.
-
-#### **Prerequisites**
-
-To run the python script, you need to have the following 3rd party tools placed at the same directory:
-
-* [TianoCompress](https://github.com/tianocore/edk2/tree/master/BaseTools/Source/C/TianoCompress/) (i.e. [TianoCompress.exe](https://github.com/tianocore/edk2-BaseTools-win32/))
-* [7-Zip Console](https://www.7-zip.org/) (i.e. 7z.exe)
-
-#### **Build/Freeze/Compile with PyInstaller**
-
-PyInstaller can build/freeze/compile the utility at all three supported platforms, it is simple to run and gets updated often.
-
-1. Make sure Python 3.7.0 or newer is installed:
-
-> python --version
-
-2. Use pip to install PyInstaller:
-
-> pip3 install pyinstaller
-
-3. Build/Freeze/Compile:
-
-> pyinstaller --noupx --onefile AMI_UCP_Extract.py
-
-At dist folder you should find the final utility executable
-
-#### **Anti-Virus False Positives**
-
-Some Anti-Virus software may claim that the built/frozen/compiled executable contains viruses. Any such detections are false positives, usually of PyInstaller. You can switch to a better Anti-Virus software, report the false positive to their support, add the executable to the exclusions, build/freeze/compile yourself or use the Python script directly.
-
-#### **Pictures**
-
-![](https://i.imgur.com/3PaWy3M.png)
+* [**Apple EFI PBZX Extractor**](#apple-efi-pbzx-extractor)
+* [**Award BIOS Module Extractor**](#award-bios-module-extractor)
+* [**Dell PFS Update Extractor**](#dell-pfs-update-extractor)
+* [**Fujitsu SFX BIOS Extractor**](#fujitsu-sfx-bios-extractor)
+* [**Fujitsu UPC BIOS Extractor**](#fujitsu-upc-bios-extractor)
+* [**Insyde iFlash/iFdPacker Extractor**](#insyde-iflashifdpacker-extractor)
+* [**Panasonic BIOS Package Extractor**](#panasonic-bios-package-extractor)
+* [**Phoenix TDK Packer Extractor**](#phoenix-tdk-packer-extractor)
+* [**Portwell EFI Update Extractor**](#portwell-efi-update-extractor)
+* [**Toshiba BIOS COM Extractor**](#toshiba-bios-com-extractor)
+* [**VAIO Packaging Manager Extractor**](#vaio-packaging-manager-extractor)
 
 ## **AMI BIOS Guard Extractor**
 
-![](https://i.imgur.com/p0rrlqv.png)
+![]()
 
 #### **Description**
 
-Parses AMI BIOS Guard (a.k.a. PFAT, Platform Firmware Armoring Technology) images, extracts their SPI/BIOS/UEFI firmware components and decompiles the Intel BIOS Guard Scripts. It supports all AMI PFAT revisions and formats, including those with nested AMI PFAT structures. The output comprises only final firmware components which are directly usable by end users.
+Parses AMI BIOS Guard (a.k.a. PFAT, Platform Firmware Armoring Technology) images, extracts their SPI/BIOS/UEFI firmware components and decompiles the Intel BIOS Guard Scripts. It supports all AMI PFAT revisions and formats, including those with Index Information tables or nested AMI PFAT structures. The output comprises only final firmware components which are directly usable by end users.
 
-Note that the AMI PFAT structure does not have an explicit component order. AMI's BIOS Guard Firmware Update Tool (AFUBGT) updates components based on the user/OEM provided Parameters and Options. That means that merging all the components together does not usually yield a proper SPI/BIOS/UEFI image. The utility does generate such a merged file with the name "X_00 -- AMI_PFAT_X_DATA_ALL.bin" but it is up to the end user to determine its usefulness. Moreover, any custom OEM data after the AMI PFAT structure are additionally stored in a file with the name "X_YY -- AMI_PFAT_X_DATA_END.bin" and it is once again up to the end user to determine its usefulness. In cases where the trailing custom OEM data include a nested AMI PFAT structure, the utility will process and extract it automatically as well.
-
-#### **Usage**
-
-You can either Drag & Drop or manually enter the full path of a folder containing AMI BIOS Guard (PFAT) images.
-
-#### **Download**
-
-An already built/frozen/compiled binary is provided by me for Windows only. Thus, **you don't need to manually build/freeze/compile it under Windows**. Instead, download the latest version from the [Releases](https://github.com/platomav/BIOSUtilities/releases) tab. To extract the already built/frozen/compiled archive, you need to use programs which support RAR5 compression. Note that you need to manually apply any prerequisites.
-
-#### **Compatibility**
-
-Should work at all Windows, Linux or macOS operating systems which have Python 3.7 support. Windows users who plan to use the already built/frozen/compiled binary must make sure that they have the latest Windows Updates installed which include all required "Universal C Runtime (CRT)" libraries.
-
-#### **Prerequisites**
-
-To decompile the Intel BIOS Guard Scripts via the Python script, you need to additionally have the following 3rd party Python utility at the same directory:
-
-* [BIOS Guard Script Tool](https://github.com/allowitsme/big-tool/tree/sdk-compat) (i.e. big_script_tool.py)
-
-#### **Build/Freeze/Compile with PyInstaller**
-
-PyInstaller can build/freeze/compile the utility at all three supported platforms, it is simple to run and gets updated often.
-
-1. Make sure Python 3.7.0 or newer is installed:
-
-> python --version
-
-2. Use pip to install PyInstaller:
-
-> pip3 install pyinstaller
-
-3. Copy BIOS Guard Script Tool dependency to build directory:
-
-> AMI_PFAT_Extract.py, big_script_tool.py
-
-4. Build/Freeze/Compile:
-
-> pyinstaller --noupx --onefile AMI_PFAT_Extract.py
-
-At dist folder you should find the final utility executable
-
-#### **Anti-Virus False Positives**
-
-Some Anti-Virus software may claim that the built/frozen/compiled executable contains viruses. Any such detections are false positives, usually of PyInstaller. You can switch to a better Anti-Virus software, report the false positive to their support, add the executable to the exclusions, build/freeze/compile yourself or use the Python script directly.
-
-#### **Pictures**
-
-![](https://i.imgur.com/iZD3GY0.png)
-
-## **Phoenix SCT BIOS Extractor**
-
-![](https://i.imgur.com/z4VM06J.png)
-
-#### **Description**
-
-Parses Phoenix SecureCore Technology (SCT) BIOS images and extracts their SPI/BIOS/UEFI firmware components. It supports all Phoenix SCT revisions and formats, including those which are originally LZMA compressed. The output comprises only final firmware components which are directly usable by end users.
-
-![](https://i.imgur.com/p6s8L6j.png)
-<sub><sup>*Icon owned by Phoenix*</sup></sub>
+Note that the AMI PFAT structure may not have an explicit component order. AMI's BIOS Guard Firmware Update Tool (AFUBGT) updates components based on the user/OEM provided Parameters and Options or Index Information table, when applicable. That means that merging all the components together does not usually yield a proper SPI/BIOS/UEFI image. The utility does generate such a merged file with the name "00 -- \<filename\>\_ALL.bin" but it is up to the end user to determine its usefulness. Moreover, any custom OEM data after the AMI PFAT structure are additionally stored in the last file with the name "\<n+1\> -- \_OOB.bin" and it is once again up to the end user to determine its usefulness. In cases where the trailing custom OEM data include a nested AMI PFAT structure, the utility will process and extract it automatically as well.
 
 #### **Usage**
 
-You can either Drag & Drop or manually enter the full path of a folder containing Phoenix SCT BIOS images. Optional arguments:
+You can either Drag & Drop or manually enter AMI BIOS Guard (PFAT) image file(s). Optional arguments:
   
 * -h or --help : show help message and exit
-* -p or --path : parse files within given folder
-
-#### **Download**
-
-An already built/frozen/compiled binary is provided by me for Windows only. Thus, **you don't need to manually build/freeze/compile it under Windows**. Instead, download the latest version from the [Releases](https://github.com/platomav/BIOSUtilities/releases) tab. To extract the already built/frozen/compiled archive, you need to use programs which support RAR5 compression. Note that you need to manually apply any prerequisites.
+* -v or --version : show utility name and version
+* -i or --input-dir : extract from given input directory
+* -o or --output-dir : extract in given output directory
+* -e or --auto-exit : skip all user action prompts
 
 #### **Compatibility**
 
-Should work at all Windows, Linux or macOS operating systems which have Python 3.7 support. Windows users who plan to use the already built/frozen/compiled binary must make sure that they have the latest Windows Updates installed which include all required "Universal C Runtime (CRT)" libraries.
+Should work at all Windows, Linux or macOS operating systems which have Python 3.10 support.
 
 #### **Prerequisites**
 
-To run the utility, you do not need any 3rd party tool.
+Optionally, to decompile the AMI PFAT \> Intel BIOS Guard Scripts, you must have the following 3rd party utility at the "external" project directory:
 
-#### **Build/Freeze/Compile with PyInstaller**
-
-PyInstaller can build/freeze/compile the utility at all three supported platforms, it is simple to run and gets updated often.
-
-1. Make sure Python 3.7.0 or newer is installed:
-
-> python --version
-
-2. Use pip to install PyInstaller:
-
-> pip3 install pyinstaller
-
-3. Build/Freeze/Compile:
-
-> pyinstaller --noupx --onefile Phoenix_SCT_Extract.py
-
-At dist folder you should find the final utility executable
-
-#### **Anti-Virus False Positives**
-
-Some Anti-Virus software may claim that the built/frozen/compiled executable contains viruses. Any such detections are false positives, usually of PyInstaller. You can switch to a better Anti-Virus software, report the false positive to their support, add the executable to the exclusions, build/freeze/compile yourself or use the Python script directly.
+* [BIOS Guard Script Tool](https://github.com/platomav/BGScriptTool) (i.e. big_script_tool.py)
 
 #### **Pictures**
 
-![](https://i.imgur.com/Td6F5mm.png)
+![]()
 
-## **Portwell EFI BIOS Extractor**
+## **AMI UCP Update Extractor**
 
-![](https://i.imgur.com/ySdUSgf.png)
+![]()
 
 #### **Description**
 
-Parses Portwell UEFI Unpacker EFI images (usually named "Update.efi"), extracts their SPI/BIOS/UEFI/EC firmware components and shows all relevant info. It supports all Portwell UEFI Unpacker revisions and formats, including those which contain Tiano compressed files. The output comprises only final firmware components and utilities which are directly usable by end users.
+Parses AMI UCP (Utility Configuration Program) Update executables, extracts their firmware components (e.g. SPI/BIOS/UEFI, EC, ME etc) and shows all relevant info. It supports all AMI UCP revisions and formats, including those with nested AMI PFAT, AMI UCP or Insyde iFlash/iFdPacker structures. The output comprises only final firmware components and utilities which are directly usable by end users.
 
 #### **Usage**
 
-You can either Drag & Drop or manually enter the full path of a folder containing Portwell UEFI Unpacker EFI images. Optional arguments:
+You can either Drag & Drop or manually enter AMI UCP Update executable file(s). Optional arguments:
   
 * -h or --help : show help message and exit
-* -p or --path : parse files within given folder
-
-#### **Download**
-
-An already built/frozen/compiled binary is provided by me for Windows only. Thus, **you don't need to manually build/freeze/compile it under Windows**. Instead, download the latest version from the [Releases](https://github.com/platomav/BIOSUtilities/releases) tab. To extract the already built/frozen/compiled archive, you need to use programs which support RAR5 compression. Note that you need to manually apply any prerequisites.
+* -v or --version : show utility name and version
+* -i or --input-dir : extract from given input directory
+* -o or --output-dir : extract in given output directory
+* -e or --auto-exit : skip all user action prompts
+* -c or --checksum : verify AMI UCP Checksums (slow)
 
 #### **Compatibility**
 
-Should work at all Windows, Linux or macOS operating systems which have Python 3.7 support. Windows users who plan to use the already built/frozen/compiled binary must make sure that they have the latest Windows Updates installed which include all required "Universal C Runtime (CRT)" libraries.
+Should work at all Windows, Linux or macOS operating systems which have Python 3.10 support.
 
 #### **Prerequisites**
 
-To run the python script, you need to have the following 3rd party Python module installed:
+To run the utility, you must have the following 3rd party tools at the "external" project directory:
 
-* [pefile](https://pypi.org/project/pefile/)
+* [TianoCompress](https://github.com/tianocore/edk2/tree/master/BaseTools/Source/C/TianoCompress/) (i.e. [TianoCompress.exe for Windows](https://github.com/tianocore/edk2-BaseTools-win32/) or TianoCompress for Linux)
+* [7-Zip Console](https://www.7-zip.org/) (i.e. 7z.exe for Windows or 7zzs for Linux)
 
-> pip3 install pefile
+Optionally, to decompile the AMI UCP \> AMI PFAT \> Intel BIOS Guard Scripts (when applicable), you must have the following 3rd party utility at the "external" project directory:
 
-To run the python script or its built/frozen/compiled binary, you need to additionally have the following 3rd party tool at the same directory:
-
-* [TianoCompress](https://github.com/tianocore/edk2/tree/master/BaseTools/Source/C/TianoCompress/) (i.e. [TianoCompress.exe](https://github.com/tianocore/edk2-BaseTools-win32/))
-
-#### **Build/Freeze/Compile with PyInstaller**
-
-PyInstaller can build/freeze/compile the utility at all three supported platforms, it is simple to run and gets updated often.
-
-1. Make sure Python 3.7.0 or newer is installed:
-
-> python --version
-
-2. Use pip to install PyInstaller:
-
-> pip3 install pyinstaller
-
-3. Use pip to install pefile:
-
-> pip3 install pefile
-
-4. Build/Freeze/Compile:
-
-> pyinstaller --noupx --onefile Portwell_EFI_Extract.py
-
-At dist folder you should find the final utility executable
-
-#### **Anti-Virus False Positives**
-
-Some Anti-Virus software may claim that the built/frozen/compiled executable contains viruses. Any such detections are false positives, usually of PyInstaller. You can switch to a better Anti-Virus software, report the false positive to their support, add the executable to the exclusions, build/freeze/compile yourself or use the Python script directly.
+* [BIOS Guard Script Tool](https://github.com/platomav/BGScriptTool) (i.e. big_script_tool.py)
 
 #### **Pictures**
 
-![](https://i.imgur.com/EhCzMLk.png)
-
-## **Apple EFI Sucatalog Link Grabber**
-
-![](https://i.imgur.com/zTVFs4I.png)
-
-#### **Description**
-
-Parses Apple Software Update CatalogURL .sucatalog files and saves all EFI firmware package links into a text file. It removes any xml formatting, ignores false positives, removes duplicate links and sorts them in alphabetical order for easy comparison afterwards.
-
-#### **Usage**
-
-You can either Drag & Drop or let it automatically parse any .sucatalog files within its working directory.
-
-#### **Download**
-
-An already built/frozen/compiled binary is provided by me for Windows only. Thus, **you don't need to manually build/freeze/compile it under Windows**. Instead, download the latest version from the [Releases](https://github.com/platomav/BIOSUtilities/releases) tab. To extract the already built/frozen/compiled archive, you need to use programs which support RAR5 compression. Note that you need to manually apply any prerequisites.
-
-#### **Compatibility**
-
-Should work at all Windows, Linux or macOS operating systems which have Python 3.7 support. Windows users who plan to use the already built/frozen/compiled binary must make sure that they have the latest Windows Updates installed which include all required "Universal C Runtime (CRT)" libraries.
-
-#### **Prerequisites**
-
-To run the utility, you do not need any 3rd party tool.
-
-#### **Build/Freeze/Compile with PyInstaller**
-
-PyInstaller can build/freeze/compile the utility at all three supported platforms, it is simple to run and gets updated often.
-
-1. Make sure Python 3.7.0 or newer is installed:
-
-> python --version
-
-2. Use pip to install PyInstaller:
-
-> pip3 install pyinstaller
-
-3. Build/Freeze/Compile:
-
-> pyinstaller --noupx --onefile Apple_EFI_Links.py
-
-At dist folder you should find the final utility executable
-
-#### **Anti-Virus False Positives**
-
-Some Anti-Virus software may claim that the built/frozen/compiled executable contains viruses. Any such detections are false positives, usually of PyInstaller. You can switch to a better Anti-Virus software, report the false positive to their support, add the executable to the exclusions, build/freeze/compile yourself or use the Python script directly.
-
-## **Apple EFI File Renamer**
-
-![](https://i.imgur.com/mWGhWja.png)
-
-#### **Description**
-
-Parses Apple EFI files and renames them based on Intel's official $IBIOSI$ tag as follows: Model_Version_Build_Year_Month_Day_Hour_Minute_Checksum. The checksum is calculated and added by the utility in order to differentiate any EFI files with the same $IBIOSI$ tag. In rare cases in which the $IBIOSI$ tag is compressed, the utility automatically first uses [LongSoft's UEFIFind and UEFIExtract](https://github.com/LongSoft/UEFITool) tools.
-
-#### **Usage**
-
-You can either Drag & Drop or manually enter the full path of a folder containing Apple EFI firmware.
-
-#### **Download**
-
-An already built/frozen/compiled binary is provided by me for Windows only. Thus, **you don't need to manually build/freeze/compile it under Windows**. Instead, download the latest version from the [Releases](https://github.com/platomav/BIOSUtilities/releases) tab. To extract the already built/frozen/compiled archive, you need to use programs which support RAR5 compression. Note that you need to manually apply any prerequisites.
-
-#### **Compatibility**
-
-Should work at all Windows, Linux or macOS operating systems which have Python 3.7 support. Windows users who plan to use the already built/frozen/compiled binary must make sure that they have the latest Windows Updates installed which include all required "Universal C Runtime (CRT)" libraries.
-
-#### **Prerequisites**
-
-To run the python script or its built/frozen/compiled binary, you need to have the following 3rd party tools at the same directory:
-
-* [UEFIFind](https://github.com/LongSoft/UEFITool) (i.e. UEFIFind.exe)
-* [UEFIExtract](https://github.com/LongSoft/UEFITool) (i.e. UEFIExtract.exe)
-
-#### **Build/Freeze/Compile with PyInstaller**
-
-PyInstaller can build/freeze/compile the utility at all three supported platforms, it is simple to run and gets updated often.
-
-1. Make sure Python 3.7.0 or newer is installed:
-
-> python --version
-
-2. Use pip to install PyInstaller:
-
-> pip3 install pyinstaller
-
-3. Build/Freeze/Compile:
-
-> pyinstaller --noupx --onefile Apple_EFI_Rename.py
-
-At dist folder you should find the final utility executable
-
-#### **Anti-Virus False Positives**
-
-Some Anti-Virus software may claim that the built/frozen/compiled executable contains viruses. Any such detections are false positives, usually of PyInstaller. You can switch to a better Anti-Virus software, report the false positive to their support, add the executable to the exclusions, build/freeze/compile yourself or use the Python script directly.
+![]()
 
 ## **Apple EFI IM4P Splitter**
 
-![](https://i.imgur.com/G5RkXQk.png)
+![]()
 
 #### **Description**
 
-Parses Apple multiple EFI firmware .im4p files and splits all detected EFI firmware into separate SPI/BIOS images.
+Parses Apple IM4P multi-EFI files and splits all detected EFI firmware into separate Intel SPI/BIOS images. The output comprises only final firmware components and utilities which are directly usable by end users.
 
 #### **Usage**
 
-You can either Drag & Drop or manually enter the full path of a folder containing Apple EFI IM4P firmware.
-
-#### **Download**
-
-An already built/frozen/compiled binary is provided by me for Windows only. Thus, **you don't need to manually build/freeze/compile it under Windows**. Instead, download the latest version from the [Releases](https://github.com/platomav/BIOSUtilities/releases) tab. To extract the already built/frozen/compiled archive, you need to use programs which support RAR5 compression. Note that you need to manually apply any prerequisites.
+You can either Drag & Drop or manually enter Apple EFI IM4P file(s). Optional arguments:
+  
+* -h or --help : show help message and exit
+* -v or --version : show utility name and version
+* -i or --input-dir : extract from given input directory
+* -o or --output-dir : extract in given output directory
+* -e or --auto-exit : skip all user action prompts
 
 #### **Compatibility**
 
-Should work at all Windows, Linux or macOS operating systems which have Python 3.7 support. Windows users who plan to use the already built/frozen/compiled binary must make sure that they have the latest Windows Updates installed which include all required "Universal C Runtime (CRT)" libraries.
+Should work at all Windows, Linux or macOS operating systems which have Python 3.10 support.
 
 #### **Prerequisites**
 
-To run the utility, you do not need any 3rd party tool.
+To run the utility, you do not need any prerequisites.
 
-#### **Build/Freeze/Compile with PyInstaller**
+#### **Pictures**
 
-PyInstaller can build/freeze/compile the utility at all three supported platforms, it is simple to run and gets updated often.
+![]()
 
-1. Make sure Python 3.7.0 or newer is installed:
+## **Apple EFI Image Identifier**
 
-> python --version
+![]()
 
-2. Use pip to install PyInstaller:
+#### **Description**
 
-> pip3 install pyinstaller
+Parses Apple EFI images and identifies them based on Intel's official $IBIOSI$ tag, which contains info such as Model, Version, Build, Date and Time. Optionally, the utility can rename the input Apple EFI image based on the retrieved $IBIOSI$ tag info, while also making sure to differentiate any EFI images with the same $IBIOSI$ tag (e.g. Production, Pre-Production) by appending a checksum of their data.
 
-3. Build/Freeze/Compile:
+#### **Usage**
 
-> pyinstaller --noupx --onefile Apple_EFI_Split.py
+You can either Drag & Drop or manually enter Apple EFI image file(s). Optional arguments:
+  
+* -h or --help : show help message and exit
+* -v or --version : show utility name and version
+* -i or --input-dir : extract from given input directory
+* -o or --output-dir : extract in given output directory
+* -e or --auto-exit : skip all user action prompts
+* -r or --rename : rename EFI image based on its tag
 
-At dist folder you should find the final utility executable
+#### **Compatibility**
 
-#### **Anti-Virus False Positives**
+Should work at all Windows, Linux or macOS operating systems which have Python 3.10 support.
 
-Some Anti-Virus software may claim that the built/frozen/compiled executable contains viruses. Any such detections are false positives, usually of PyInstaller. You can switch to a better Anti-Virus software, report the false positive to their support, add the executable to the exclusions, build/freeze/compile yourself or use the Python script directly.
+#### **Prerequisites**
+
+To run the utility, you must have the following 3rd party tools at the "external" project directory:
+
+* [UEFIFind](https://github.com/LongSoft/UEFITool/) (i.e. [UEFIFind.exe for Windows or UEFIFind for Linux](https://github.com/LongSoft/UEFITool/releases))
+* [UEFIExtract](https://github.com/LongSoft/UEFITool/) (i.e. [UEFIExtract.exe for Windows or UEFIExtract for Linux](https://github.com/LongSoft/UEFITool/releases))
+
+#### **Pictures**
+
+![]()
 
 ## **Apple EFI Package Extractor**
 
-![](https://i.imgur.com/pufGuZ4.png)
+![]()
 
 #### **Description**
 
-Parses Apple EFI firmware packages (i.e. FirmwareUpdate.pkg, BridgeOSUpdateCustomer.pkg), extracts their EFI images, splits those in IM4P format and renames the final SPI/BIOS images accordingly. The utility automatically uses the free version of [AnyToISO](https://www.crystalidea.com/anytoiso) to extract the EFI .pkg files. The subsequent IM4P splitting and EFI renaming requires the presence of "Apple EFI IM4P Splitter" and "Apple EFI File Renamer" utilities.
+Parses Apple EFI PKG firmware packages (i.e. FirmwareUpdate.pkg, BridgeOSUpdateCustomer.pkg), extracts their EFI images, splits those in IM4P format and identifies/renames the final Intel SPI/BIOS images accordingly. The output comprises only final firmware components which are directly usable by end users.
 
 #### **Usage**
 
-You can either Drag & Drop or manually enter the full path of a folder containing Apple EFI firmware package (.pkg) files. Depending on where AnyToISO is installed on your system, you must change the "anytoiso_path" variable accordingly.
+You can either Drag & Drop or manually enter Apple EFI PKG package file(s). Optional arguments:
 
-#### **Download**
-
-An already built/frozen/compiled binary is **not** provided because the script requires the user to set the AnyToISO executable path variable. Remember that you need to include prerequisites such as AnyToISO, Apple EFI IM4P Splitter and Apple EFI File Renamer for the utility to work.
+* -h or --help : show help message and exit
+* -v or --version : show utility name and version
+* -i or --input-dir : extract from given input directory
+* -o or --output-dir : extract in given output directory
+* -e or --auto-exit : skip all user action prompts
 
 #### **Compatibility**
 
-Should work at all Windows & macOS operating systems which have Python 3.7 and AnyToISO support.
+Should work at all Windows, Linux or macOS operating systems which have Python 3.10 support.
 
 #### **Prerequisites**
 
-To run the python script, you need to have the following 3rd party tools installed or placed at the same directory:
+To run the utility, you must have the following 3rd party tools at the "external" project directory:
 
-* [AnyToISO](https://www.crystalidea.com/anytoiso) (i.e. anytoiso.exe)
-* [UEFIFind](https://github.com/LongSoft/UEFITool) (i.e. UEFIFind.exe)
-* [UEFIExtract](https://github.com/LongSoft/UEFITool) (i.e. UEFIExtract.exe)
+* [7-Zip Console](https://www.7-zip.org/) (i.e. 7z.exe for Windows or 7zzs for Linux)
 
-#### **Build/Freeze/Compile with PyInstaller**
+#### **Pictures**
 
-PyInstaller can build/freeze/compile the utility at all three supported platforms, it is simple to run and gets updated often. Note that, due to this utility's nature, you may need to perform some small script changes for a built/frozen/compiled binary to work.
+![]()
 
-1. Make sure Python 3.7.0 or newer is installed:
+## **Apple EFI PBZX Extractor**
 
-> python --version
-
-2. Use pip to install PyInstaller:
-
-> pip3 install pyinstaller
-
-3. Build/Freeze/Compile:
-
-> pyinstaller --noupx --onefile Apple_EFI_Package.py
-
-At dist folder you should find the final utility executable
-
-#### **Anti-Virus False Positives**
-
-Some Anti-Virus software may claim that the built/frozen/compiled executable contains viruses. Any such detections are false positives, usually of PyInstaller. You can switch to a better Anti-Virus software, report the false positive to their support, add the executable to the exclusions, build/freeze/compile yourself or use the Python script directly.
-
-## **Panasonic BIOS Update Extractor**
-
-![](https://i.imgur.com/uZAoMGR.png)
-<sub><sup>*Icon owned by Panasonic*</sup></sub>
+![]()
 
 #### **Description**
 
-Parses Panasonic BIOS Update executables and extracts their SPI/BIOS image. The utility automatically uses [Rustam Abdullaev's unpack_lznt1](https://github.com/rustyx/unpack_lznt1) tool in order to decompress the initially Microsoft LZNT1 compressed resource data.
+Parses Apple EFI PBZX images, re-assembles their CPIO payload and extracts its firmware components (e.g. IM4P, EFI, Utilities, Scripts etc). It supports CPIO re-assembly from both Raw and XZ compressed PBZX Chunks. The output comprises only final firmware components and utilities which are directly usable by end users.
 
 #### **Usage**
 
-You can either Drag & Drop or manually enter the full path of a folder containing Panasonic BIOS Update executables.
+You can either Drag & Drop or manually enter Apple EFI PBZX image file(s). Optional arguments:
 
-#### **Download**
-
-An already built/frozen/compiled Windows binary is provided by me. Thus, **you don't need to manually build/freeze/compile it**. Instead, download the latest version from the [Releases](https://github.com/platomav/BIOSUtilities/releases) tab. To extract the already built/frozen/compiled archive, you need to use programs which support RAR5 compression. Note that you need to manually apply any prerequisites.
+* -h or --help : show help message and exit
+* -v or --version : show utility name and version
+* -i or --input-dir : extract from given input directory
+* -o or --output-dir : extract in given output directory
+* -e or --auto-exit : skip all user action prompts
 
 #### **Compatibility**
 
-Should work at all Windows operating systems which have Python 3.7 support. Windows users who plan to use the already built/frozen/compiled binary must make sure that they have the latest Windows Updates installed which include all required "Universal C Runtime (CRT)" libraries.
+Should work at all Windows, Linux or macOS operating systems which have Python 3.10 support.
 
 #### **Prerequisites**
 
-To run the python script, you need to have the following 3rd party Python module installed:
+To run the utility, you must have the following 3rd party tools at the "external" project directory:
+
+* [7-Zip Console](https://www.7-zip.org/) (i.e. 7z.exe for Windows or 7zzs for Linux)
+
+#### **Pictures**
+
+![]()
+
+## **Award BIOS Module Extractor**
+
+![]()
+
+#### **Description**
+
+Parses Award BIOS images and extracts their modules (e.g. RAID, MEMINIT, \_EN_CODE, awardext etc). It supports all Award BIOS image revisions and formats, including those which contain LZH compressed files. The output comprises only final firmware components which are directly usable by end users.
+
+#### **Usage**
+
+You can either Drag & Drop or manually enter Award BIOS image file(s). Optional arguments:
+  
+* -h or --help : show help message and exit
+* -v or --version : show utility name and version
+* -i or --input-dir : extract from given input directory
+* -o or --output-dir : extract in given output directory
+* -e or --auto-exit : skip all user action prompts
+
+#### **Compatibility**
+
+Should work at all Windows, Linux or macOS operating systems which have Python 3.10 support.
+
+#### **Prerequisites**
+
+To run the utility, you must have the following 3rd party tool at the "external" project directory:
+
+* [7-Zip Console](https://www.7-zip.org/) (i.e. 7z.exe for Windows or 7zzs for Linux)
+
+#### **Pictures**
+
+![]()
+
+## **Dell PFS Update Extractor**
+
+![]()
+
+#### **Description**
+
+Parses Dell PFS Update images and extracts their Firmware (e.g. SPI, BIOS/UEFI, EC, ME etc) and Utilities (e.g. Flasher etc) component sections. It supports all Dell PFS revisions and formats, including those which are originally LZMA compressed in ThinOS packages (PKG), ZLIB compressed or Intel BIOS Guard (PFAT) protected. The output comprises only final firmware components which are directly usable by end users.
+
+#### **Usage**
+
+You can either Drag & Drop or manually enter Dell PFS Update images(s). Optional arguments:
+  
+* -h or --help : show help message and exit
+* -v or --version : show utility name and version
+* -i or --input-dir : extract from given input directory
+* -o or --output-dir : extract in given output directory
+* -e or --auto-exit : skip all user action prompts
+* -a or --advanced : extract signatures and metadata
+* -s or --structure : show PFS structure information
+
+#### **Compatibility**
+
+Should work at all Windows, Linux or macOS operating systems which have Python 3.10 support.
+
+#### **Prerequisites**
+
+Optionally, to decompile the Intel BIOS Guard (PFAT) Scripts, you must have the following 3rd party utility at the "external" project directory:
+
+* [BIOS Guard Script Tool](https://github.com/platomav/BGScriptTool) (i.e. big_script_tool.py)
+
+#### **Pictures**
+
+![]()
+
+## **Fujitsu SFX BIOS Extractor**
+
+![]()
+
+#### **Description**
+
+Parses Fujitsu SFX BIOS images and extracts their obfuscated Microsoft CAB archived firmware (e.g. SPI, BIOS/UEFI, EC, ME etc) and utilities (e.g. WinPhlash, PHLASH.INI etc) components. The output comprises only final firmware components which are directly usable by end users.
+
+#### **Usage**
+
+You can either Drag & Drop or manually enter Fujitsu SFX BIOS image file(s). Optional arguments:
+  
+* -h or --help : show help message and exit
+* -v or --version : show utility name and version
+* -i or --input-dir : extract from given input directory
+* -o or --output-dir : extract in given output directory
+* -e or --auto-exit : skip all user action prompts
+
+#### **Compatibility**
+
+Should work at all Windows, Linux or macOS operating systems which have Python 3.10 support.
+
+#### **Prerequisites**
+
+To run the utility, you must have the following 3rd party tool at the "external" project directory:
+
+* [7-Zip Console](https://www.7-zip.org/) (i.e. 7z.exe for Windows or 7zzs for Linux)
+
+#### **Pictures**
+
+![]()
+
+## **Fujitsu UPC BIOS Extractor**
+
+![]()
+
+#### **Description**
+
+Parses Fujitsu UPC BIOS images and extracts their EFI compressed SPI/BIOS/UEFI firmware component. The output comprises only a final firmware component which is directly usable by end users.
+
+#### **Usage**
+
+You can either Drag & Drop or manually enter Fujitsu UPC BIOS image file(s). Optional arguments:
+  
+* -h or --help : show help message and exit
+* -v or --version : show utility name and version
+* -i or --input-dir : extract from given input directory
+* -o or --output-dir : extract in given output directory
+* -e or --auto-exit : skip all user action prompts
+
+#### **Compatibility**
+
+Should work at all Windows, Linux or macOS operating systems which have Python 3.10 support.
+
+#### **Prerequisites**
+
+To run the utility, you must have the following 3rd party tool at the "external" project directory:
+
+* [TianoCompress](https://github.com/tianocore/edk2/tree/master/BaseTools/Source/C/TianoCompress/) (i.e. [TianoCompress.exe for Windows](https://github.com/tianocore/edk2-BaseTools-win32/) or TianoCompress for Linux)
+
+#### **Pictures**
+
+![]()
+
+## **Insyde iFlash/iFdPacker Extractor**
+
+![]()
+
+#### **Description**
+
+Parses Insyde iFlash/iFdPacker Update images and extracts their firmware (e.g. SPI, BIOS/UEFI, EC, ME etc) and utilities (e.g. InsydeFlash, H2OFFT, FlsHook, iscflash, platform.ini etc) components. It supports all Insyde iFlash/iFdPacker revisions and formats, including those which are 7-Zip SFX 7z compressed in raw, obfuscated or password-protected form. The output comprises only final firmware components which are directly usable by end users.
+
+#### **Usage**
+
+You can either Drag & Drop or manually enter Insyde iFlash/iFdPacker Update image file(s). Optional arguments:
+  
+* -h or --help : show help message and exit
+* -v or --version : show utility name and version
+* -i or --input-dir : extract from given input directory
+* -o or --output-dir : extract in given output directory
+* -e or --auto-exit : skip all user action prompts
+
+#### **Compatibility**
+
+Should work at all Windows, Linux or macOS operating systems which have Python 3.10 support.
+
+#### **Prerequisites**
+
+To run the utility, you do not need any prerequisites.
+
+#### **Pictures**
+
+![]()
+
+## **Panasonic BIOS Package Extractor**
+
+![]()
+
+#### **Description**
+
+Parses Panasonic BIOS Package executables and extracts their firmware (e.g. SPI, BIOS/UEFI, EC etc) and utilities (e.g. winprom, configuration etc) components. It supports all Panasonic BIOS Package revisions and formats, including those which contain LZNT1 compressed files. The output comprises only final firmware components which are directly usable by end users.
+
+#### **Usage**
+
+You can either Drag & Drop or manually enter Panasonic BIOS Package executable file(s). Optional arguments:
+  
+* -h or --help : show help message and exit
+* -v or --version : show utility name and version
+* -i or --input-dir : extract from given input directory
+* -o or --output-dir : extract in given output directory
+* -e or --auto-exit : skip all user action prompts
+
+#### **Compatibility**
+
+Should work at all Windows, Linux or macOS operating systems which have Python 3.10 support.
+
+#### **Prerequisites**
+
+To run the utility, you must have the following 3rd party Python modules installed:
+
+* [pefile](https://pypi.org/project/pefile/)
+* [lznt1](https://pypi.org/project/lznt1/)
+
+Moreover, you must have the following 3rd party tool at the "external" project directory:
+
+* [7-Zip Console](https://www.7-zip.org/) (i.e. 7z.exe for Windows or 7zzs for Linux)
+
+#### **Pictures**
+
+![]()
+
+## **Phoenix TDK Packer Extractor**
+
+![]()
+
+#### **Description**
+
+Parses Phoenix Tools Development Kit (TDK) Packer executables and extracts their firmware (e.g. SPI, BIOS/UEFI, EC etc) and utilities (e.g. WinFlash etc) components. It supports all Phoenix TDK Packer revisions and formats, including those which contain LZMA compressed files. The output comprises only final firmware components which are directly usable by end users.
+
+#### **Usage**
+
+You can either Drag & Drop or manually enter Phoenix Tools Development Kit (TDK) Packer executable file(s). Optional arguments:
+  
+* -h or --help : show help message and exit
+* -v or --version : show utility name and version
+* -i or --input-dir : extract from given input directory
+* -o or --output-dir : extract in given output directory
+* -e or --auto-exit : skip all user action prompts
+
+#### **Compatibility**
+
+Should work at all Windows, Linux or macOS operating systems which have Python 3.10 support.
+
+#### **Prerequisites**
+
+To run the utility, you must have the following 3rd party Python module installed:
+
+* [pefile](https://pypi.org/project/pefile/)
+
+#### **Pictures**
+
+![]()
+
+## **Portwell EFI Update Extractor**
+
+![]()
+
+#### **Description**
+
+Parses Portwell UEFI Unpacker EFI executables (usually named "Update.efi") and extracts their firmware (e.g. SPI, BIOS/UEFI, EC etc) and utilities (e.g. Flasher etc) components. It supports all known Portwell UEFI Unpacker revisions (v1.1, v1.2, v2.0) and formats (used, empty, null), including those which contain EFI compressed files. The output comprises only final firmware components and utilities which are directly usable by end users.
+
+#### **Usage**
+
+You can either Drag & Drop or manually enter Portwell UEFI Unpacker EFI executable file(s). Optional arguments:
+  
+* -h or --help : show help message and exit
+* -v or --version : show utility name and version
+* -i or --input-dir : extract from given input directory
+* -o or --output-dir : extract in given output directory
+* -e or --auto-exit : skip all user action prompts
+
+#### **Compatibility**
+
+Should work at all Windows, Linux or macOS operating systems which have Python 3.10 support.
+
+#### **Prerequisites**
+
+To run the utility, you must have the following 3rd party Python module installed:
 
 * [pefile](https://pypi.org/project/pefile/)
 
 > pip3 install pefile
 
-To run the python script or its built/frozen/compiled binary, you need to additionally have the following 3rd party tool at the same directory:
+Moreover, you must have the following 3rd party tool at the "external" project directory:
 
-* [unpack_lznt1](https://github.com/rustyx/unpack_lznt1) (i.e. unpack_lznt1.exe)
-
-#### **Build/Freeze/Compile with PyInstaller**
-
-PyInstaller can build/freeze/compile the utility at Windows, it is simple to run and gets updated often.
-
-1. Make sure Python 3.7.0 or newer is installed:
-
-> python --version
-
-2. Use pip to install PyInstaller:
-
-> pip3 install pyinstaller
-
-3. Use pip to install pefile:
-
-> pip3 install pefile
-
-4. Build/Freeze/Compile:
-
-> pyinstaller --noupx --onefile Panasonic_BIOS_Extract.py
-
-At dist folder you should find the final utility executable
-
-#### **Anti-Virus False Positives**
-
-Some Anti-Virus software may claim that the built/frozen/compiled executable contains viruses. Any such detections are false positives, usually of PyInstaller. You can switch to a better Anti-Virus software, report the false positive to their support, add the executable to the exclusions, build/freeze/compile yourself or use the Python script directly.
-
-## **VAIO Packaging Manager Extractor**
-
-![](https://i.imgur.com/rg4xrxJ.png)
-<sub><sup>*Icon owned by VAIO*</sup></sub>
-
-#### **Description**
-
-Parses VAIO Packaging Manager executables and extracts their contents. If direct extraction fails, it unlocks the executable in order to run at all systems and allow the user to choose the extraction location. The utility automatically uses [Igor Pavlov's 7-Zip](https://www.7-zip.org/) tool in order to decompress the initially obfuscated Microsoft CAB compressed contents.
-
-#### **Usage**
-
-You can either Drag & Drop or manually enter the full path of a folder containing VAIO Packaging Manager executables.
-
-#### **Download**
-
-An already built/frozen/compiled binary is provided by me for Windows only. Thus, **you don't need to manually build/freeze/compile it under Windows**. Instead, download the latest version from the [Releases](https://github.com/platomav/BIOSUtilities/releases) tab. To extract the already built/frozen/compiled archive, you need to use programs which support RAR5 compression. Note that you need to manually apply any prerequisites.
-
-#### **Compatibility**
-
-Should work at all Windows, Linux or macOS operating systems which have Python 3.7 support. Windows users who plan to use the already built/frozen/compiled binary must make sure that they have the latest Windows Updates installed which include all required "Universal C Runtime (CRT)" libraries.
-
-#### **Prerequisites**
-
-To run the python script or its built/frozen/compiled binary, you need to have the following 3rd party tool at the same directory:
-
-* [7-Zip Console](https://www.7-zip.org/) (i.e. 7z.exe)
-
-#### **Build/Freeze/Compile with PyInstaller**
-
-PyInstaller can build/freeze/compile the utility at all three supported platforms, it is simple to run and gets updated often.
-
-1. Make sure Python 3.7.0 or newer is installed:
-
-> python --version
-
-2. Use pip to install PyInstaller:
-
-> pip3 install pyinstaller
-
-3. Build/Freeze/Compile:
-
-> pyinstaller --noupx --onefile VAIO_Package_Extract.py
-
-At dist folder you should find the final utility executable
-
-#### **Anti-Virus False Positives**
-
-Some Anti-Virus software may claim that the built/frozen/compiled executable contains viruses. Any such detections are false positives, usually of PyInstaller. You can switch to a better Anti-Virus software, report the false positive to their support, add the executable to the exclusions, build/freeze/compile yourself or use the Python script directly.
-
-## **Fujitsu UPC BIOS Extractor**
-
-![](https://i.imgur.com/JqrlxfE.png)
-
-#### **Description**
-
-Parses Fujitsu UPC images and extracts their Tiano compressed SPI/BIOS firmware component. The output comprises only a final firmware component which is directly usable by end users.
-
-#### **Usage**
-
-You can either Drag & Drop or manually enter the full path of a folder containing Portwell UEFI Unpacker EFI images. Optional arguments:
-  
-* -h or --help : show help message and exit
-* -p or --path : parse files within given folder
-
-#### **Download**
-
-An already built/frozen/compiled binary is provided by me for Windows only. Thus, **you don't need to manually build/freeze/compile it under Windows**. Instead, download the latest version from the [Releases](https://github.com/platomav/BIOSUtilities/releases) tab. To extract the already built/frozen/compiled archive, you need to use programs which support RAR5 compression. Note that you need to manually apply any prerequisites.
-
-#### **Compatibility**
-
-Should work at all Windows, Linux or macOS operating systems which have Python 3.7 support. Windows users who plan to use the already built/frozen/compiled binary must make sure that they have the latest Windows Updates installed which include all required "Universal C Runtime (CRT)" libraries.
-
-#### **Prerequisites**
-
-To run the python script or its built/frozen/compiled binary, you need to additionally have the following 3rd party tool at the same directory:
-
-* [TianoCompress](https://github.com/tianocore/edk2/tree/master/BaseTools/Source/C/TianoCompress/) (i.e. [TianoCompress.exe](https://github.com/tianocore/edk2-BaseTools-win32/))
-
-#### **Build/Freeze/Compile with PyInstaller**
-
-PyInstaller can build/freeze/compile the utility at all three supported platforms, it is simple to run and gets updated often.
-
-1. Make sure Python 3.7.0 or newer is installed:
-
-> python --version
-
-2. Use pip to install PyInstaller:
-
-> pip3 install pyinstaller
-
-3. Build/Freeze/Compile:
-
-> pyinstaller --noupx --onefile Fujitsu_UPC_Extract.py
-
-At dist folder you should find the final utility executable
-
-#### **Anti-Virus False Positives**
-
-Some Anti-Virus software may claim that the built/frozen/compiled executable contains viruses. Any such detections are false positives, usually of PyInstaller. You can switch to a better Anti-Virus software, report the false positive to their support, add the executable to the exclusions, build/freeze/compile yourself or use the Python script directly.
+* [TianoCompress](https://github.com/tianocore/edk2/tree/master/BaseTools/Source/C/TianoCompress/) (i.e. [TianoCompress.exe for Windows](https://github.com/tianocore/edk2-BaseTools-win32/) or TianoCompress for Linux)
 
 #### **Pictures**
 
-![](https://i.imgur.com/FE8MNi2.png)
+![]()
 
-## **Fujitsu SFX BIOS Extractor**
+## **Toshiba BIOS COM Extractor**
 
-![](https://i.imgur.com/NlZGBsy.png)
-<sub><sup>*Icon owned by FUJITSU*</sup></sub>
-
-#### **Description**
-
-Parses Fujitsu SFX BIOS executables and extracts their contents. The utility automatically uses [Igor Pavlov's 7-Zip](https://www.7-zip.org/) tool in order to decompress the initially obfuscated Microsoft CAB compressed contents.
-
-#### **Usage**
-
-You can either Drag & Drop or manually enter the full path of a folder containing Fujitsu SFX BIOS executables.
-
-#### **Download**
-
-An already built/frozen/compiled binary is provided by me for Windows only. Thus, **you don't need to manually build/freeze/compile it under Windows**. Instead, download the latest version from the [Releases](https://github.com/platomav/BIOSUtilities/releases) tab. To extract the already built/frozen/compiled archive, you need to use programs which support RAR5 compression. Note that you need to manually apply any prerequisites.
-
-#### **Compatibility**
-
-Should work at all Windows, Linux or macOS operating systems which have Python 3.7 support. Windows users who plan to use the already built/frozen/compiled binary must make sure that they have the latest Windows Updates installed which include all required "Universal C Runtime (CRT)" libraries.
-
-#### **Prerequisites**
-
-To run the python script or its built/frozen/compiled binary, you need to have the following 3rd party tool at the same directory:
-
-* [7-Zip Console](https://www.7-zip.org/) (i.e. 7z.exe)
-
-#### **Build/Freeze/Compile with PyInstaller**
-
-PyInstaller can build/freeze/compile the utility at all three supported platforms, it is simple to run and gets updated often.
-
-1. Make sure Python 3.7.0 or newer is installed:
-
-> python --version
-
-2. Use pip to install PyInstaller:
-
-> pip3 install pyinstaller
-
-3. Build/Freeze/Compile:
-
-> pyinstaller --noupx --onefile Fujitsu_SFX_Extract.py
-
-At dist folder you should find the final utility executable
-
-#### **Anti-Virus False Positives**
-
-Some Anti-Virus software may claim that the built/frozen/compiled executable contains viruses. Any such detections are false positives, usually of PyInstaller. You can switch to a better Anti-Virus software, report the false positive to their support, add the executable to the exclusions, build/freeze/compile yourself or use the Python script directly.
-
-## **Award BIOS Module Extractor**
+![]()
 
 #### **Description**
 
-Parses Award BIOS images and extracts their modules. The utility automatically uses [Igor Pavlov's 7-Zip](https://www.7-zip.org/) tool in order to decompress the initially LZH compressed sub-modules.
+Parses Toshiba BIOS COM images and extracts their raw or compressed SPI/BIOS/UEFI firmware component. This utility is basically an easy to use python wrapper around [ToshibaComExtractor by LongSoft](https://github.com/LongSoft/ToshibaComExtractor). The output comprises only a final firmware component which is directly usable by end users.
 
 #### **Usage**
 
-You can either Drag & Drop or manually enter the full path of a folder containing Award BIOS firmware.
-
-#### **Download**
-
-An already built/frozen/compiled binary is provided by me for Windows only. Thus, **you don't need to manually build/freeze/compile it under Windows**. Instead, download the latest version from the [Releases](https://github.com/platomav/BIOSUtilities/releases) tab. To extract the already built/frozen/compiled archive, you need to use programs which support RAR5 compression. Note that you need to manually apply any prerequisites.
+You can either Drag & Drop or manually enter Toshiba BIOS COM image file(s). Optional arguments:
+  
+* -h or --help : show help message and exit
+* -v or --version : show utility name and version
+* -i or --input-dir : extract from given input directory
+* -o or --output-dir : extract in given output directory
+* -e or --auto-exit : skip all user action prompts
 
 #### **Compatibility**
 
-Should work at all Windows, Linux or macOS operating systems which have Python 3.7 support. Windows users who plan to use the already built/frozen/compiled binary must make sure that they have the latest Windows Updates installed which include all required "Universal C Runtime (CRT)" libraries.
+Should work at all Windows, Linux or macOS operating systems which have Python 3.10 support.
 
 #### **Prerequisites**
 
-To run the python script or its built/frozen/compiled binary, you need to have the following 3rd party tool at the same directory:
+To run the utility, you must have the following 3rd party tool at the "external" project directory:
 
-* [7-Zip Console](https://www.7-zip.org/) (i.e. 7z.exe)
+* [ToshibaComExtractor](https://github.com/LongSoft/ToshibaComExtractor) (i.e. [comextract.exe for Windows or comextract for Linux](https://github.com/LongSoft/ToshibaComExtractor/releases))
 
-#### **Build/Freeze/Compile with PyInstaller**
+#### **Pictures**
 
-PyInstaller can build/freeze/compile the utility at all three supported platforms, it is simple to run and gets updated often.
+![]()
 
-1. Make sure Python 3.7.0 or newer is installed:
+## **VAIO Packaging Manager Extractor**
 
-> python --version
+![]()
 
-2. Use pip to install PyInstaller:
+#### **Description**
 
-> pip3 install pyinstaller
+Parses VAIO Packaging Manager executables and extracts their firmware (e.g. SPI, BIOS/UEFI, EC, ME etc), utilities (e.g. WBFLASH etc) and driver (audio, video etc) components. If direct extraction fails, it attempts to unlock the executable in order to run at all non-VAIO systems and allow the user to choose the extraction location. It supports all VAIO Packaging Manager revisions and formats, including those which contain obfuscated Microsoft CAB archives or obfuscated unlock values. The output comprises only final firmware components which are directly usable by end users.
 
-3. Build/Freeze/Compile:
+#### **Usage**
 
-> pyinstaller --noupx --onefile Award_BIOS_Extract.py
+You can either Drag & Drop or manually enter VAIO Packaging Manager executable file(s). Optional arguments:
+  
+* -h or --help : show help message and exit
+* -v or --version : show utility name and version
+* -i or --input-dir : extract from given input directory
+* -o or --output-dir : extract in given output directory
+* -e or --auto-exit : skip all user action prompts
 
-At dist folder you should find the final utility executable
+#### **Compatibility**
 
-#### **Anti-Virus False Positives**
+Should work at all Windows, Linux or macOS operating systems which have Python 3.10 support.
 
-Some Anti-Virus software may claim that the built/frozen/compiled executable contains viruses. Any such detections are false positives, usually of PyInstaller. You can switch to a better Anti-Virus software, report the false positive to their support, add the executable to the exclusions, build/freeze/compile yourself or use the Python script directly.
+#### **Prerequisites**
 
-###### _Donate Button Card Image: [Credit and Loan Pack](https://flaticon.com/free-icon/credit-card_3898076) by **Freepik** under Flaticon license_
-###### _Donate Button Paypal Image: [Credit Cards Pack](https://flaticon.com/free-icon/paypal_349278) by **Freepik** under Flaticon license_
+To run the utility, you must have the following 3rd party tool at the "external" project directory:
+
+* [7-Zip Console](https://www.7-zip.org/) (i.e. 7z.exe for Windows or 7zzs for Linux)
+
+#### **Pictures**
+
+![]()
