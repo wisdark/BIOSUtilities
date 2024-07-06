@@ -1,5 +1,6 @@
-# Skip all external files
-external/*
+/.idea/
+/.mypy_cache/
+/external/*
+/venv/
 
-# Keep external > requirements file
-!external/requirements.txt
+!external/__init__.py

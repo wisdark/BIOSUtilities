@@ -1,63 +1,60 @@
-#!/usr/bin/env python3
-#coding=utf-8
+#!/usr/bin/env python3 -B
+# coding=utf-8
 
 """
 Toshiba COM Extract
 Toshiba BIOS COM Extractor
-Copyright (C) 2018-2022 Plato Mavropoulos
+Copyright (C) 2018-2024 Plato Mavropoulos
 """
 
-TITLE = 'Toshiba BIOS COM Extractor v2.0_a4'
-
 import os
-import sys
 import subprocess
-    
-# Stop __pycache__ generation
-sys.dont_write_bytecode = True
 
 from common.externals import get_comextract_path
-from common.path_ops import make_dirs, path_stem, path_suffixes
+from common.path_ops import make_dirs, path_stem, safe_name
 from common.patterns import PAT_TOSHIBA_COM
 from common.system import printer
 from common.templates import BIOSUtility
 from common.text_ops import file_to_bytes
 
-# Check if input is Toshiba BIOS COM image
-def is_toshiba_com(in_file):
-    buffer = file_to_bytes(in_file)
-    
-    is_ext = path_suffixes(in_file)[-1].upper() == '.COM' if os.path.isfile(in_file) else True
-    
-    is_com = PAT_TOSHIBA_COM.search(buffer)
-    
-    return is_ext and is_com
+TITLE = 'Toshiba BIOS COM Extractor v4.0'
 
-# Parse & Extract Toshiba BIOS COM image
-def toshiba_com_extract(input_file, extract_path, padding=0):
-    if not os.path.isfile(input_file):
-        printer('Error: Could not find input file path!', padding)
-        
-        return 1
-    
+
+def is_toshiba_com(input_object: str | bytes | bytearray) -> bool:
+    """ Check if input is Toshiba BIOS COM image """
+
+    return bool(PAT_TOSHIBA_COM.search(file_to_bytes(input_object)))
+
+
+def toshiba_com_extract(input_object: str | bytes | bytearray, extract_path: str, padding: int = 0) -> int:
+    """ Parse & Extract Toshiba BIOS COM image """
+
     make_dirs(extract_path, delete=True)
-    
-    output_name = path_stem(input_file)
-    output_file = os.path.join(extract_path, f'{output_name}.bin')
-    
+
+    if isinstance(input_object, str) and os.path.isfile(input_object):
+        input_path: str = input_object
+    else:
+        input_path = os.path.join(extract_path, 'toshiba_bios.com')
+
+        with open(input_path, 'wb') as input_buffer:
+            input_buffer.write(file_to_bytes(input_object))
+
+    output_path: str = os.path.join(extract_path, f'{safe_name(path_stem(input_path))}_extracted.bin')
+
     try:
-        subprocess.run([get_comextract_path(), input_file, output_file], check=True, stdout=subprocess.DEVNULL)
-        
-        if not os.path.isfile(output_file):
-            raise Exception('EXTRACT_FILE_MISSING')
-    except Exception:
-        printer(f'Error: ToshibaComExtractor could not extract file {input_file}!', padding)
-        
-        return 2
-    
-    printer(f'Succesfull {output_name} extraction via ToshibaComExtractor!', padding)
-    
+        subprocess.run([get_comextract_path(), input_path, output_path], check=True, stdout=subprocess.DEVNULL)
+
+        if not os.path.isfile(output_path):
+            raise FileNotFoundError('EXTRACTED_FILE_MISSING')
+    except Exception as error:  # pylint: disable=broad-except
+        printer(f'Error: ToshibaComExtractor could not extract {input_path}: {error}!', padding)
+
+        return 1
+
+    printer('Succesfull extraction via ToshibaComExtractor!', padding)
+
     return 0
 
+
 if __name__ == '__main__':
-    BIOSUtility(TITLE, is_toshiba_com, toshiba_com_extract).run_utility()
+    BIOSUtility(title=TITLE, check=is_toshiba_com, main=toshiba_com_extract).run_utility()
