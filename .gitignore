@@ -1,6 +1,5 @@
 /.idea/
 /.mypy_cache/
-/external/*
+/biosutilities/external/
+/external/
 /venv/
-
-!external/__init__.py
